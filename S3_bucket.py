@@ -1,4 +1,3 @@
-from tkinter import EXCEPTION
 import boto3
 import logging
 

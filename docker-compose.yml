@@ -1,0 +1,8 @@
+services:
+  app:
+    image: s3_to_db:latest
+    volumes:
+      - ./config:/app/config
+    container_name: s3_to_db
+    env_file:
+      - .env
