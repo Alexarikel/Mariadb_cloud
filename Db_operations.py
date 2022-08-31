@@ -1,6 +1,8 @@
 import mariadb
 import logging
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename="db_script.log", level=logging.INFO, format="%(asctime)s:%(name)s:%(funcName)s:%(message)s")
 
 class Db_operations:
     def __init__(self, user, password, host, port, database):
@@ -12,14 +14,19 @@ class Db_operations:
         self.conn = self.connection()
 
     def connection (self):
-        conn = mariadb.connect(
-            user = self.user,
-            password = self.password,
-            host = self.host,
-            port = self.port,
-            database = self.database
-        )
-        return conn
+        try:
+            conn = mariadb.connect(
+                user = self.user,
+                password = self.password,
+                host = self.host,
+                port = self.port,
+                database = self.database
+            )
+        except:
+            logger.exception("Connection failed.")
+        else:
+            logger.info("Connected to database.")
+            return conn
 
     def insert (self, table, file_name):
         with open (file_name, mode="r") as downloaded:
@@ -29,7 +36,9 @@ class Db_operations:
                     sqlquery = f"INSERT INTO {table} VALUES {*line,}"
                     curr = self.conn.cursor()
                     curr.execute(sqlquery)
-                except mariadb.Error as e:
-                    logging.error(e)
+                except:
+                    logger.exception("An error occured while inserting data")
                     return False
+                else:
+                    logger.info("Inserted successfully.")
             self.conn.commit()

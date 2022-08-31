@@ -3,7 +3,13 @@ import os.path
 import sys
 from S3_bucket import S3_bucket
 from Db_operations import Db_operations
+import logging
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename="db_script.log", level=logging.INFO, format="%(asctime)s:%(name)s:%(funcName)s:%(message)s")
+
+stream_handler = logging.StreamHandler()
+logger.addHandler(stream_handler)
 
 ACCESSID = sys.argv[1]
 ACCESSKEY = sys.argv[2]
@@ -28,6 +34,8 @@ def duplicated_files(list_bucket, client_bucket, conf):
                 client_bucket.download(obj, obj)
                 conf.insert(TABLE, obj)
                 os.remove(obj)
+            else:
+                logger.info(f"File {obj} already exists.")
 
      
 if __name__ == "__main__":
