@@ -22,6 +22,7 @@ TABLE = sys.argv[8]
 UPDATED = sys.argv[9]
 BUCKET = sys.argv[10]
 
+
 READ_AND_APPEND = "a+"
 
 def duplicated_files(list_bucket, client_bucket, conf):

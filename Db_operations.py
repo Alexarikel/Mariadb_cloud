@@ -22,8 +22,8 @@ class Db_operations:
                 port = self.port,
                 database = self.database
             )
-        except:
-            logger.exception("Connection failed.")
+        except Exception as e:
+            logger.exception(f"Connection failed. Error: {e}")
         else:
             logger.info("Connected to database.")
             return conn
@@ -36,8 +36,8 @@ class Db_operations:
                     sqlquery = f"INSERT INTO {table} VALUES {*line,}"
                     curr = self.conn.cursor()
                     curr.execute(sqlquery)
-                except:
-                    logger.exception("An error occured while inserting data")
+                except Exception as e:
+                    logger.exception(f"An error occured while inserting data. Error: {e}")
                     return False
                 else:
                     logger.info("Inserted successfully.")
