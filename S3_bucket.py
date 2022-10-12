@@ -1,6 +1,7 @@
 from asyncio.log import logger
 import boto3
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename="db_script.log", level=logging.INFO, format="%(asctime)s:%(name)s:%(funcName)s:%(message)s")
@@ -15,8 +16,8 @@ class S3_bucket:
     def session(self):
         try:
             s3_client = boto3.client('s3', aws_access_key_id=self.accessid, aws_secret_access_key=self.accesskey)
-        except:
-            logger.exception("Connection failed.")
+        except Exception as e:
+            logger.exception(f"Connection failed.  Error: {e}")
         else:
             logger.info("Connected to s3 bucket.")
             return s3_client
@@ -32,9 +33,19 @@ class S3_bucket:
     def download (self, file_name, file_to_save):
         try:
             self.s3_client.download_file(self.bucket, file_name, file_to_save)
-        except:
-            logger.exception("An error occured while downloading files.")
-            return False
+        except Exception as e:
+            logger.exception(f"An error occured while downloading files. Error: {e}")
         else:
             logger.info("Downloaded successfully.")
+
+    def upload (self, file_to_upload, obj_name = None):
+        if obj_name is None:
+            obj_name = os.path.basename(file_to_upload)
+        try:
+            self.s3_client.upload_file(file_to_upload, self.bucket, obj_name)
+        except Exception as e:
+            logger.exception(f"An error occured while uploading files. Error: {e}")
+        else:
+            logger.info("Downloaded successfully.")
+
 
