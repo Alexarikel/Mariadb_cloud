@@ -42,3 +42,23 @@ class Db_operations:
                 else:
                     logger.info("Inserted successfully.")
             self.conn.commit()
+
+    def insert_from_html (self, table, form):
+        line = []
+        row = ""
+        for i in form:
+            row = row + i[0] + ","
+            line.append(i[1])
+        row = row[:-1]
+
+        try:
+            sqlquery = f"INSERT INTO {table} ({row}) VALUES {*line,}"
+            print(sqlquery)
+            curr = self.conn.cursor()
+            curr.execute(sqlquery)
+        except Exception as e:
+            logger.exception(f"An error occured while inserting data. Error: {e}")
+            return False
+        else:
+            logger.info("Inserted successfully.")
+        self.conn.commit()
